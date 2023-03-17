@@ -109,3 +109,12 @@ a {
     color-scheme: dark;
   }
 }
+
+@layer components {
+  .btn {
+    @apply px-3 py-2 border hover:bg-gray-500 bg-blue-600 min-w-[100px] rounded-full;
+  }
+  input {
+    @apply px-3 py-2 border rounded-full;
+  }
+}

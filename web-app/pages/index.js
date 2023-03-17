@@ -1,9 +1,10 @@
 import Head from 'next/head'
 import ConnectWallet from '@/components/ConnectWallet'
-
+import Login from '@/components/Login'
+import User from '@/components/User'
+import Dashboard from '@/components/Dashboard'
 
 export default function Home() {
-
   return (
     <>
       <Head>
@@ -13,9 +14,11 @@ export default function Home() {
         <meta name="author" content="raldblox" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className='min-h-screen flex flex-col items-center p-4'>
-        <h1 className='font-bold text-xl uppercase'>Hello</h1>
+      <main className='min-h-screen flex flex-col items-center p-10 gap-10'>
+        <a target="_blank" href='https://mumbai.polygonscan.com/address/0x35f1c5493c1733E2b32DD5dCBD0D189BFF920daD#code' className='font-bold text-xl uppercase'>STORAGE No1</a>
+        <User />
         <ConnectWallet />
+        <Dashboard />
       </main>
     </>
   )
