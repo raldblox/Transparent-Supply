@@ -27,7 +27,7 @@ contract FoodStorage is Ownable2Step {
     address public admin;
 
     struct foodstorage {
-        bytes32 txhash;
+        uint256 txBlock;
         uint256 timestamp;
         uint256 cropID;
         uint256 temperature;
@@ -45,9 +45,9 @@ contract FoodStorage is Ownable2Step {
         uint256 latitude1;
         uint256 longitude2;
         uint256 latitude2;
-        bytes32 departureTx;
+        uint256 departureTxBlock;
         uint256 departureTime;
-        bytes32 arrivalTx;
+        uint256 arrivalTxBlock;
         uint256 arrivalTime;
         uint256 distanceTravelled;
     }
@@ -132,7 +132,7 @@ contract FoodStorage is Ownable2Step {
     ) public {
         require(isFilled, "Food storage is empty");
         foodstorage storage data = foodstorages.push();
-        data.txhash = blockhash(block.number);
+        data.txBlock = block.number;
         data.timestamp = block.timestamp;
         data.cropID = deliveryIDs - 1;
         data.temperature = _temperature;
@@ -148,7 +148,7 @@ contract FoodStorage is Ownable2Step {
         public
         view
         returns (
-            bytes32 txhash,
+            uint256 txBlock,
             uint256 timestamp,
             uint256 temperature,
             uint256 humidity,
@@ -158,7 +158,7 @@ contract FoodStorage is Ownable2Step {
         )
     {
         return (
-            foodstorages[index].txhash,
+            foodstorages[index].txBlock,
             foodstorages[index].timestamp,
             foodstorages[index].temperature,
             foodstorages[index].humidity,
@@ -185,7 +185,7 @@ contract FoodStorage is Ownable2Step {
             data.crops = crops[deliveryId];
             data.deliveryID = deliveryId;
             data.driverID = msg.sender;
-            data.departureTx = blockhash(block.number);
+            data.departureTxBlock = block.number;
             data.longitude1 = _longitude1;
             data.latitude1 = _latitude1;
             data.departureTime = block.timestamp;
@@ -202,7 +202,7 @@ contract FoodStorage is Ownable2Step {
         uint256 deliveryID = getAssignedDelivery(msg.sender);
         require(activeDeliveries[deliveryID], "Inactive Delivery");
         locationdata storage data = locationdatas[deliveryID]; // get the latest starting location data
-        data.arrivalTx = blockhash(block.number);
+        data.arrivalTxBlock = block.number;
         data.longitude2 = _longitude2;
         data.latitude2 = _latitude2;
         data.arrivalTime = block.timestamp;
@@ -249,15 +249,15 @@ contract FoodStorage is Ownable2Step {
         string memory departure_ = string(
             abi.encodePacked(
                 Strings.toString(locationdatas[index].departureTime),
-                " - HASH:",
-                Strings.toString(uint256(locationdatas[index].departureTx))
+                " - BLOCK:",
+                Strings.toString(uint256(locationdatas[index].departureTxBlock))
             )
         );
         string memory arrival_ = string(
             abi.encodePacked(
                 Strings.toString(locationdatas[index].arrivalTime),
-                " - HASH:",
-                Strings.toString(uint256(locationdatas[index].arrivalTx))
+                " - BLOCK:",
+                Strings.toString(uint256(locationdatas[index].arrivalTxBlock))
             )
         );
         string memory distanceTravelled_ = string(
