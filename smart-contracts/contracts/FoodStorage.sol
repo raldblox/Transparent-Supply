@@ -13,7 +13,6 @@ pragma solidity ^0.8.10;
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@openzeppelin/contracts/utils/Base64.sol";
 
 /**
  *
@@ -23,7 +22,7 @@ import "@openzeppelin/contracts/utils/Base64.sol";
  * and tracks GPS location(longitude, latitude) of each delivery cycle.
  *
  */
-contract FoodStorage {
+contract FoodStorage is Ownable2Step {
     using SafeMath for uint256;
     address public admin;
 
