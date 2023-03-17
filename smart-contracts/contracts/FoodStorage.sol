@@ -10,7 +10,6 @@
 
 pragma solidity ^0.8.10;
 
-import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
@@ -22,9 +21,10 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
  * and tracks GPS location(longitude, latitude) of each delivery cycle.
  *
  */
-contract FoodStorage is Ownable2Step {
+contract FoodStorage {
     using SafeMath for uint256;
-    address public admin;
+    address public masterAdmin;
+    mapping(address => bool) public isAdmins;
 
     struct foodstorage {
         uint256 txBlock;
@@ -78,11 +78,11 @@ contract FoodStorage is Ownable2Step {
     mapping(address => bool) public isDrivers;
 
     constructor() {
-        admin = msg.sender;
+        masterAdmin = msg.sender;
     }
 
     modifier isAdmin() {
-        require(admin == msg.sender);
+        require(isAdmins[msg.sender] || masterAdmin == msg.sender);
         _;
     }
 
@@ -99,6 +99,17 @@ contract FoodStorage is Ownable2Step {
         uint256 _deliveryID
     ) external view returns (string memory) {
         return crops[_deliveryID];
+    }
+
+    // Register admins
+    function registerAdmin(
+        address _walletAddress,
+        string memory _name,
+        bool _isDriver
+    ) public {
+        require(masterAdmin == msg.sender, "Not the master admin.");
+        driverNames[_walletAddress] = _name;
+        isDrivers[_walletAddress] = _isDriver;
     }
 
     // Register drivers
