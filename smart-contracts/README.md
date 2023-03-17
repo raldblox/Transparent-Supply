@@ -1,15 +1,6 @@
-# Hardhat Project
+# IoT: Transparent Supply
 
-Some hardhat commands:
-
-```shell
-npx hardhat help
-npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
-npx hardhat run scripts/deploy.js --network mumbai
-npx hardhat verify --network mumbai CONTRACT_ADDRESS
-```
+[DEPLOYED SMART CONTRACT ON POLYGON MUMBAI](https://mumbai.polygonscan.com/address/0x56c6eAaB1698a54985c8c948A6650Fc54fdb7242#code)
 
 ## Food Storage Tracking
 
@@ -45,3 +36,14 @@ npx hardhat verify --network mumbai CONTRACT_ADDRESS
     - Latitude
     - Distance Travelled
 - Retrieve delivery data using `getDeliveryDataByIndex`
+
+Some hardhat commands:
+
+```shell
+npx hardhat help
+npx hardhat test
+npx hardhat node
+npx hardhat run scripts/deploy.js
+npx hardhat run scripts/deploy.js --network mumbai
+npx hardhat verify --network mumbai CONTRACT_ADDRESS
+```
