@@ -45,20 +45,6 @@ The function returns a tuple containing the following elements:
 - `oxygen`: The oxygen level during the storage.
 - `carbondioxide`: The carbon dioxide level during the storage.
 
-To retrieve recorded delivery cycle data, use the `getDeliveryDataByIndex` function. This function requires the following parameter:
-
-- `index`: The index of the recorded data.
-
-The function returns a tuple containing the following elements:
-
-- `cropInfo`: The name of the crop/food being delivered.
-- `driverName`: The name of the driver.
-- `location1`: An object containing the (longitude, latitude) coordinate of the starting location.
-- `location2`: An object containing the (longitude, latitude) coordinate of the ending location.
-- `departure`: An object containing the block.timestamp and block.number of the departure time.
-- `arrival`: An object containing the block.timestamp and block.number of the arrival time.
-- `distanceTravelled`: The distance travelled during the delivery.
-
 ### Delivery Tracking
 
 #### Registering Crops
