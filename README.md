@@ -144,3 +144,7 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 - [Ethers.js](https://docs.ethers.io/v5/): For their library for interacting with the Ethereum blockchain and their comprehensive documentation.
 - [Next.js](https://nextjs.org/): For their React-based web framework.
 - [TailwindCSS](https://tailwindcss.com/): For their utility-first CSS framework.
+
+## Authors and Citation
+
+Transparent Supply Project is the work of [many people](https://github.com/raldblox/Transparent-Supply/graphs/contributors) who contribute to the project at different levels.
