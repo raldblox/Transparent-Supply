@@ -147,4 +147,4 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 
 ## Authors and Citation
 
-Transparent Supply Project is the work of [many people](https://github.com/raldblox/Transparent-Supply/graphs/contributors) who contribute to the project at different levels.
+This project is the work of [people](https://github.com/raldblox/Transparent-Supply/graphs/contributors) who contribute to the project at different levels and co-created with Electronics Engineering students (Jay Marcayda, [Nica Jaurigue](https://github.com/iamnicaa), Jaebelene Magora, Jamille Ann Mamalayan) of [Pamatasan ng Cabuyao](https://pnc.edu.ph).
