@@ -10,7 +10,11 @@ const Login = ({ login }) => {
     }
 
     return (
-        <button onClick={set} className={user == login ? "btn animate-pulse rounded-full uppercase" : "btn rounded-full uppercase"}>{login}</button>
+        <button
+            onClick={set}
+            className={user == login ? "btn animate-pulse rounded-full uppercase" : "btn rounded-full uppercase"}>
+            {login}
+        </button>
     )
 }
 

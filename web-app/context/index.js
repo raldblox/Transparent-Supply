@@ -5,6 +5,7 @@ export const Context = createContext();
 export const ContextProvider = (props) => {
     const [account, setAccount] = useState("");
     const [network, setNetwork] = useState("");
+    const [contractAddress, setContractAddress] = useState("");
     const [user, setUser] = useState("");
     const value = {
         network,
@@ -13,6 +14,8 @@ export const ContextProvider = (props) => {
         setAccount,
         user,
         setUser,
+        contractAddress,
+        setContractAddress,
     };
 
     return <Context.Provider value={value}>{props.children}</Context.Provider>;

@@ -40,8 +40,8 @@ describe("Zoociety SmartContract System", function () {
         it("Should store data", async function () {
             await Contract.connect(owner).registerCrop("BROCOLLI");
             await Contract.connect(owner).registerDriver(user1.address, "RALDBLOX", true);
-            await Contract.connect(owner).recordFoodStorageData(10, 1, 1, 1, 1);
-            await Contract.connect(owner).recordFoodStorageData(15, 2, 3, 2, 0);
+            await Contract.connect(owner).recordFoodStorageData("10", "1", "1", "1", "1");
+            await Contract.connect(owner).recordFoodStorageData("15", "1", "1", "1", "1");
             const data = await Contract.getFoodStorageDataByIndex(0);
             const data1 = await Contract.getFoodStorageDataByIndex(1);
             console.log(data);
@@ -55,8 +55,8 @@ describe("Zoociety SmartContract System", function () {
             expect(await Contract.isDriver(user1.address)).to.equal(
                 true
             );
-            await Contract.connect(user1).startLocationTracking(10, 11);
-            await Contract.connect(user1).endLocationTracking(15, 23, 100);
+            await Contract.connect(user1).startLocationTracking("10", "11");
+            await Contract.connect(user1).endLocationTracking("55", "23", "100");
             const data = await Contract.getDeliveryDataByIndex(0);
             console.log(data);
         });
@@ -68,16 +68,16 @@ describe("Zoociety SmartContract System", function () {
             expect(await Contract.isDriver(user1.address)).to.equal(
                 true
             );
-            await Contract.connect(user1).startLocationTracking(10, 11);
-            await Contract.connect(user1).endLocationTracking(15, 23, 100);
+            await Contract.connect(user1).startLocationTracking("10", "11");
+            await Contract.connect(user1).endLocationTracking("15", "23", "100");
             const data = await Contract.getDeliveryDataByIndex(0);
             console.log(data);
             await Contract.connect(owner).registerCrop("CAULIFLOWER");
             expect(await Contract.isDriver(user1.address)).to.equal(
                 true
             );
-            await Contract.connect(user1).startLocationTracking(1, 2);
-            await Contract.connect(user1).endLocationTracking(12, 21, 33);
+            await Contract.connect(user1).startLocationTracking("1", "2");
+            await Contract.connect(user1).endLocationTracking("12", "21", "33");
             const data1 = await Contract.getDeliveryDataByIndex(1);
             console.log(data1);
         });

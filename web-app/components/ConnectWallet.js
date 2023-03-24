@@ -5,7 +5,7 @@ import { Context } from '@/context';
 const ConnectWallet = () => {
     const [connected, setConnected] = useState(false);
     const [connecting, setConnecting] = useState(false);
-    const { account, setAccount, network, setNetwork } =
+    const { account, setAccount, network, setNetwork, contractAddress, setContractAddress } =
         useContext(Context);
 
     const connectWallet = async () => {
@@ -110,7 +110,7 @@ const ConnectWallet = () => {
             {account ?
                 <h5 className='bg-gray-700 rounded-full px-3 py-1 border'>
                     Connected to {" "}
-                    {account}
+                    {account.slice(0, 10)}...{account.slice(-10)}
                 </h5> :
                 <button className='px-3 py-2 border rounded-lg hover:bg-gray-500' onClick={connectWallet}>
                     CONNECT WALLET

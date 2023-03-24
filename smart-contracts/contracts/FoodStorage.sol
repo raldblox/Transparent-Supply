@@ -22,7 +22,7 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
  *
  */
 contract FoodStorage {
-    using SafeMath for uint256;
+    using Strings for uint256;
     address public masterAdmin;
     mapping(address => bool) public isAdmins;
 
@@ -30,26 +30,26 @@ contract FoodStorage {
         uint256 txBlock;
         uint256 timestamp;
         uint256 cropID;
-        uint256 temperature;
-        uint256 humidity;
-        uint256 ethylene;
-        uint256 oxygen;
-        uint256 carbondioxide;
+        string temperature;
+        string humidity;
+        string ethylene;
+        string oxygen;
+        string carbondioxide;
     }
 
     struct locationdata {
         string crops;
         uint256 deliveryID;
         address driverID;
-        uint256 longitude1;
-        uint256 latitude1;
-        uint256 longitude2;
-        uint256 latitude2;
+        string longitude1;
+        string latitude1;
+        string longitude2;
+        string latitude2;
         uint256 departureTxBlock;
         uint256 departureTime;
         uint256 arrivalTxBlock;
         uint256 arrivalTime;
-        uint256 distanceTravelled;
+        string distanceTravelled;
     }
 
     uint256 public deliveryIDs;
@@ -79,6 +79,7 @@ contract FoodStorage {
 
     constructor() {
         masterAdmin = msg.sender;
+        isAdmins[msg.sender] = true;
     }
 
     modifier isAdmin() {
@@ -133,13 +134,17 @@ contract FoodStorage {
         return isDrivers[_walletAddress];
     }
 
+    function isAuthorized(address _walletAddress) external view returns (bool) {
+        return isAdmins[_walletAddress];
+    }
+
     // Record food storage data
     function recordFoodStorageData(
-        uint256 _temperature,
-        uint256 _humidity,
-        uint256 _ethylene,
-        uint256 _oxygen,
-        uint256 _carbondioxide
+        string memory _temperature,
+        string memory _humidity,
+        string memory _ethylene,
+        string memory _oxygen,
+        string memory _carbondioxide
     ) public {
         require(isFilled, "Food storage is empty");
         foodstorage storage data = foodstorages.push();
@@ -161,11 +166,11 @@ contract FoodStorage {
         returns (
             uint256 txBlock,
             uint256 timestamp,
-            uint256 temperature,
-            uint256 humidity,
-            uint256 ethylene,
-            uint256 oxygen,
-            uint256 carbondioxide
+            string memory temperature,
+            string memory humidity,
+            string memory ethylene,
+            string memory oxygen,
+            string memory carbondioxide
         )
     {
         return (
@@ -185,8 +190,8 @@ contract FoodStorage {
 
     // Start Delivery
     function startLocationTracking(
-        uint256 _longitude1,
-        uint256 _latitude1
+        string memory _longitude1,
+        string memory _latitude1
     ) public {
         require(isDrivers[msg.sender], "Not a driver");
         uint256 deliveryId = deliveryIDs - 1;
@@ -206,9 +211,9 @@ contract FoodStorage {
 
     // Finish Delivery
     function endLocationTracking(
-        uint256 _longitude2,
-        uint256 _latitude2,
-        uint256 _distanceTravelled
+        string memory _longitude2,
+        string memory _latitude2,
+        string memory _distanceTravelled
     ) public {
         uint256 deliveryID = getAssignedDelivery(msg.sender);
         require(activeDeliveries[deliveryID], "Inactive Delivery");
@@ -242,18 +247,18 @@ contract FoodStorage {
         string memory location1_ = string(
             abi.encodePacked(
                 "(",
-                Strings.toString(locationdatas[index].longitude1),
+                locationdatas[index].longitude1,
                 ",",
-                Strings.toString(locationdatas[index].latitude1),
+                locationdatas[index].latitude1,
                 ")"
             )
         );
         string memory location2_ = string(
             abi.encodePacked(
                 "(",
-                Strings.toString(locationdatas[index].longitude2),
+                locationdatas[index].longitude2,
                 ",",
-                Strings.toString(locationdatas[index].latitude2),
+                locationdatas[index].latitude2,
                 ")"
             )
         );
@@ -271,12 +276,8 @@ contract FoodStorage {
                 Strings.toString(uint256(locationdatas[index].arrivalTxBlock))
             )
         );
-        string memory distanceTravelled_ = string(
-            abi.encodePacked(
-                Strings.toString(locationdatas[index].distanceTravelled),
-                "meters"
-            )
-        );
+        string memory distanceTravelled_ = locationdatas[index]
+            .distanceTravelled;
         return (
             locationdatas[index].crops,
             drivername,
