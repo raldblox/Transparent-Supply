@@ -112,6 +112,9 @@ export const ContextProvider = (props) => {
   };
 
   const checkBalance = async () => {
+    if (!account) {
+      return;
+    }
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const balanceWei = await provider.getBalance(account);
     const balanceEth = ethers.utils.formatEther(balanceWei);
