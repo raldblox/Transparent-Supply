@@ -177,7 +177,7 @@ export default function Home() {
 
   useEffect(() => {
     readStatus();
-  }, [])
+  }, [admin, contractAddress, user])
 
   return (
     <>
