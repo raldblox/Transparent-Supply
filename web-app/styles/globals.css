@@ -2,40 +2,56 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
+@layer base {
+  body {
+    @apply text-gray-100 bg-slate-900;
+  }
+  html,
+  body {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: white;
-  background: black;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+  a {
+    color: inherit;
+    text-decoration: none;
   }
 }
 
 @layer components {
-  .btn {
-    @apply px-3 py-2 border hover:bg-gray-500 bg-blue-600 min-w-[80px] rounded-full;
+  nav {
+    @apply h-[80px] flex items-center justify-center lg:px-10;
   }
+  main {
+    @apply container flex flex-col min-h-screen;
+  }
+  .container {
+    @apply w-auto max-w-none;
+  }
+
+  section {
+    @apply border bg-gray-800 w-full lg:max-w-[60vw] md:max-w-[90vw] flex flex-col gap-5;
+  }
+
+  .btn {
+    @apply px-3 py-2 border hover:bg-gray-500 bg-blue-600 min-w-[80px];
+  }
+
   input,
   button {
-    @apply px-3 py-2 border rounded-full;
+    @apply px-4 py-1 border ;
+  }
+
+  input {
+    @apply flex-grow text-black placeholder:text-black;
+  }
+
+  footer {
+    @apply flex justify-center px-8 py-6;
   }
 }

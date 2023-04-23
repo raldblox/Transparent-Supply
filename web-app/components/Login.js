@@ -13,8 +13,8 @@ const Login = ({ login }) => {
       onClick={set}
       className={
         user == login
-          ? "btn animate-pulse rounded-full uppercase"
-          : "btn rounded-full uppercase"
+          ? "btn animate-pulse uppercase"
+          : "btn uppercase"
       }
     >
       {login}
