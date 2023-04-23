@@ -151,7 +151,7 @@ export const ContextProvider = (props) => {
   useEffect(() => {
     checkIfWalletIsConnected();
     checkBalance();
-  }, [])
+  }, [account])
 
   useEffect(() => {
     if (contractAddress) {
