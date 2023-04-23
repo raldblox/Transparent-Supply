@@ -17,6 +17,14 @@ export default function Home() {
   const [distance, setDistance] = useState("");
   const [forDelivery, setOutForDelivery] = useState(false);
   const [isFilled, setFilled] = useState(false);
+
+  const [temp, setTemp] = useState("");
+  const [humidity, setHumidity] = useState("");
+  const [ethylene, setEthylene] = useState("");
+  const [oxygen, setOxygen] = useState("");
+  const [co2, setCo2] = useState("");
+
+
   const { user, contractAddress, setContractAddress, account, admin, driver } = useContext(Context);
 
   const registerCrops = async () => {
@@ -177,15 +185,16 @@ export default function Home() {
         <section className='p-5'>
           {user == "admin" && "Account is an authorized admin."}
           {user == "driver" && "Account is an authorized driver."}
+          {user == "storage" && "Account is an authorized admin."}
         </section>
       }
-      <section className="grid grid-cols-3">
-        <div className="flex flex-col col-span-3 gap-5 m-5 lg:col-span-2">
+      <section className="grid grid-cols-4">
+        <div className="flex flex-col col-span-4 gap-5 m-5 lg:col-span-2">
           <div className='flex gap-5 '>
             <input
               disabled={lock}
               type="text"
-              className="text-center"
+              className="w-full px-3 py-2 font-semibold text-left border"
               placeholder="Insert Contract Address"
               value={contractAddress}
               onChange={(e) => setContractAddress(e.target.value)}
@@ -202,12 +211,13 @@ export default function Home() {
             VIEW ON POLYGONSCAN
           </a>}
         </div>
-        <div className='flex items-center justify-center col-span-3 gap-5 p-5 lg:col-span-1'>
+        <div className='flex items-center justify-center col-span-4 gap-5 p-5 border-t lg:border-l lg:col-span-2'>
           <div className='flex flex-col justify-center gap-5'>
-            <h2 className='text-center'>TRANSACT AS</h2>
+            <h2 className='text-center'>CONTROLLER</h2>
             <div className='flex gap-5'>
               <Login login="admin" />
               <Login login="driver" />
+              <Login login="storage" />
             </div>
           </div>
         </div>
@@ -218,13 +228,13 @@ export default function Home() {
             <h1 className='text-lg font-bold uppercase'>{isFilled && "Food storage is now filled. Ready for delivery."}</h1>
             <div className='flex justify-between gap-2 mt-5'>
               <input
-                disabled={!admin}
+                disabled={isFilled}
                 value={crops}
                 onChange={(e) => setCrops(e.target.value)}
                 placeholder="Insert Storage Content (e.g. Brocolli, Cauliflower, Beef)"
                 className="w-full px-3 py-2 font-semibold text-left border"
               />
-              <button className='btn' onClick={registerCrops}>
+              <button className='btn' onClick={registerCrops} disabled={isFilled}>
                 Register
               </button>
             </div>
@@ -294,6 +304,52 @@ export default function Home() {
               />
               <button className='btn' onClick={endLocation}>
                 Finish
+              </button>
+            </div>
+          </div>}
+        {user == "storage" &&
+          <div className='p-5 border'>
+            <h1 className='text-lg font-bold uppercase'>{isFilled && "Food storage is now filled. Start tracking now."}</h1>
+            <div className='flex justify-between w-auto gap-2 mt-5 max-w-none'>
+              <input
+                disabled={!isFilled}
+                value={temp}
+                onChange={(e) => setTemp(e.target.value)}
+                placeholder="Temperature"
+                className="flex-grow w-full px-3 py-2 font-semibold text-left border"
+              />
+              <input
+                disabled={!isFilled}
+                value={humidity}
+                onChange={(e) => setHumidity(e.target.value)}
+                placeholder="Humidity"
+                className="flex-grow w-full px-3 py-2 font-semibold text-left border"
+              />
+            </div>
+            <div className='flex gap-2 mt-5'>
+              <input
+                disabled={!isFilled}
+                value={ethylene}
+                onChange={(e) => setEthylene(e.target.value)}
+                placeholder="Ethylene"
+                className="w-full px-3 py-2 font-semibold text-left border"
+              />
+              <input
+                disabled={!isFilled}
+                value={oxygen}
+                onChange={(e) => setOxygen(e.target.value)}
+                placeholder="Oxygen"
+                className="w-full px-3 py-2 font-semibold text-left border"
+              />
+              <input
+                disabled={!isFilled}
+                value={co2}
+                onChange={(e) => setCo2(e.target.value)}
+                placeholder="Carbon Dioxide"
+                className="w-full px-3 py-2 font-semibold text-left border"
+              />
+              <button className='btn' onClick={endLocation}>
+                RECORD
               </button>
             </div>
           </div>}
