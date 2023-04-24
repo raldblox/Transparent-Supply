@@ -12,8 +12,10 @@ export default function Home() {
   const [crops, setCrops] = useState("");
   const [driverName, setDriverName] = useState("");
   const [driverAddr, setDriverAddr] = useState("");
-  const [longitude, setLongitude] = useState("");
-  const [latitude, setLatitude] = useState("");
+  const [longitude1, setLongitude1] = useState("");
+  const [latitude1, setLatitude1] = useState("");
+  const [longitude2, setLongitude2] = useState("");
+  const [latitude2, setLatitude2] = useState("");
   const [distance, setDistance] = useState("");
   const [forDelivery, setOutForDelivery] = useState(false);
   const [isFilled, setFilled] = useState(false);
@@ -90,6 +92,31 @@ export default function Home() {
           signer
         );
         let tx = await contract.registerDriver(driverAddr, driverName, true);
+        const receipt = await tx.wait();
+        if (receipt.status === 1) {
+          alert(`TX: https://mumbai.polygonscan.com.com/tx/` + tx.hash)
+        } else {
+          alert("Failed. Please try again.");
+        }
+      }
+    } catch (error) {
+      console.log("Error:", error);
+      alert("Something went wrong. Please try again later.");
+    }
+  };
+
+  const recordCrops = async () => {
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(
+          contractAddress,
+          contractAbi,
+          signer
+        );
+        let tx = await contract.recordFoodStorageData(temp, humidity, ethylene, oxygen, co2);
         const receipt = await tx.wait();
         if (receipt.status === 1) {
           alert(`TX: https://mumbai.polygonscan.com.com/tx/` + tx.hash)
@@ -263,16 +290,16 @@ export default function Home() {
             <h1 className='text-lg font-bold uppercase'>{forDelivery && "Food is now out for delivery."}</h1>
             <div className='flex justify-between w-auto gap-2 mt-5 max-w-none'>
               <input
-                disabled={!driver}
-                value={longitude}
-                onChange={(e) => setLongitude(e.target.value)}
+                disabled={!driver || forDelivery}
+                value={longitude1}
+                onChange={(e) => setLongitude1(e.target.value)}
                 placeholder="Longitude"
                 className="flex-grow w-full px-3 py-2 font-semibold text-left border"
               />
               <input
-                disabled={!driver}
-                value={latitude}
-                onChange={(e) => setLatitude(e.target.value)}
+                disabled={!driver || forDelivery}
+                value={latitude1}
+                onChange={(e) => setLatitude1(e.target.value)}
                 placeholder="Latitude"
                 className="flex-grow w-full px-3 py-2 font-semibold text-left border"
               />
@@ -282,21 +309,21 @@ export default function Home() {
             </div>
             <div className='flex gap-2 mt-5'>
               <input
-                disabled={!driver}
-                value={longitude}
-                onChange={(e) => setLongitude(e.target.value)}
+                disabled={!driver || !isFilled}
+                value={longitude2}
+                onChange={(e) => setLongitude2(e.target.value)}
                 placeholder="Longitude"
                 className="w-full px-3 py-2 font-semibold text-left border"
               />
               <input
-                disabled={!driver}
-                value={latitude}
-                onChange={(e) => setLatitude(e.target.value)}
+                disabled={!driver || !isFilled}
+                value={latitude2}
+                onChange={(e) => setLatitude2(e.target.value)}
                 placeholder="Latitude"
                 className="w-full px-3 py-2 font-semibold text-left border"
               />
               <input
-                disabled={!driver}
+                disabled={!driver || !isFilled}
                 value={distance}
                 onChange={(e) => setDistance(e.target.value)}
                 placeholder="Distance Travelled"
@@ -348,7 +375,7 @@ export default function Home() {
                 placeholder="Carbon Dioxide"
                 className="w-full px-3 py-2 font-semibold text-left border"
               />
-              <button className='btn' onClick={endLocation}>
+              <button className='btn' onClick={recordCrops}>
                 RECORD
               </button>
             </div>
