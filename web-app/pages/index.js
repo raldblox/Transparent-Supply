@@ -141,7 +141,7 @@ export default function Home() {
           contractAbi,
           signer
         );
-        let tx = await contract.startLocationTracking(longitude, latitude);
+        let tx = await contract.startLocationTracking(longitude1, latitude1);
         const receipt = await tx.wait();
         if (receipt.status === 1) {
           alert(`TX: https://mumbai.polygonscan.com.com/tx/` + tx.hash)
@@ -166,7 +166,7 @@ export default function Home() {
           contractAbi,
           signer
         );
-        let tx = await contract.endLocationTracking(longitude, latitude, distance);
+        let tx = await contract.endLocationTracking(longitude2, latitude2, distance);
         const receipt = await tx.wait();
         if (receipt.status === 1) {
           alert(`TX: https://mumbai.polygonscan.com.com/tx/` + tx.hash)
