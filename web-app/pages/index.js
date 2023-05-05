@@ -315,21 +315,21 @@ export default function Home() {
             </div>
             <div className='flex gap-2 mt-5'>
               <input
-                disabled={!driver || !isFilled}
+                disabled={!driver || !isFilled || !onDelivery}
                 value={longitude2}
                 onChange={(e) => setLongitude2(e.target.value)}
                 placeholder="Longitude"
                 className="w-full px-3 py-2 font-semibold text-left border"
               />
               <input
-                disabled={!driver || !isFilled}
+                disabled={!driver || !isFilled || !onDelivery}
                 value={latitude2}
                 onChange={(e) => setLatitude2(e.target.value)}
                 placeholder="Latitude"
                 className="w-full px-3 py-2 font-semibold text-left border"
               />
               <input
-                disabled={!driver || !isFilled}
+                disabled={!driver || !isFilled || !onDelivery}
                 value={distance}
                 onChange={(e) => setDistance(e.target.value)}
                 placeholder="Distance Travelled"
