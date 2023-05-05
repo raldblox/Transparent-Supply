@@ -25,6 +25,7 @@ export default function Home() {
   const [ethylene, setEthylene] = useState("");
   const [oxygen, setOxygen] = useState("");
   const [co2, setCo2] = useState("");
+  const [onDelivery, setOnDelivery] = useState("");
 
 
   const { user, contractAddress, setContractAddress, account, admin, driver } = useContext(Context);
@@ -74,6 +75,8 @@ export default function Home() {
         setOutForDelivery(status);
         let fill = await contract.isFilled();
         setFilled(fill);
+        let onDelivery = await contract.getAssignedDelivery(account);
+        setOnDelivery(onDelivery);
       }
     } catch (error) {
       console.log("Error:", error);
@@ -148,6 +151,7 @@ export default function Home() {
         } else {
           alert("Failed. Please try again.");
         }
+        readStatus();
       }
     } catch (error) {
       console.log("Error:", error);
@@ -173,6 +177,7 @@ export default function Home() {
         } else {
           alert("Failed. Please try again.");
         }
+        readStatus();
       }
     } catch (error) {
       console.log("Error:", error);
@@ -290,14 +295,14 @@ export default function Home() {
             <h1 className='text-lg font-bold uppercase'>{forDelivery && "Food is now out for delivery."}</h1>
             <div className='flex justify-between w-auto gap-2 mt-5 max-w-none'>
               <input
-                disabled={!driver || forDelivery}
+                disabled={!driver || forDelivery || onDelivery}
                 value={longitude1}
                 onChange={(e) => setLongitude1(e.target.value)}
                 placeholder="Longitude"
                 className="flex-grow w-full px-3 py-2 font-semibold text-left border"
               />
               <input
-                disabled={!driver || forDelivery}
+                disabled={!driver || forDelivery || onDelivery}
                 value={latitude1}
                 onChange={(e) => setLatitude1(e.target.value)}
                 placeholder="Latitude"
