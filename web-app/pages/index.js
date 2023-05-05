@@ -80,7 +80,7 @@ export default function Home() {
         console.log("deliveryId:", String(deliveryId));
         let onDelivery = await contract.activeDeliveries[deliveryId];
         console.log("onDelivery?:", Boolean(deliveryId));
-        setOnDelivery(Boolean(deliveryId));
+        setOnDelivery(Boolean(onDelivery));
         console.log("onDelivery:", onDelivery);
       }
     } catch (error) {
