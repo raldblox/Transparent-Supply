@@ -75,7 +75,8 @@ export default function Home() {
         setOutForDelivery(status);
         let fill = await contract.isFilled();
         setFilled(fill);
-        let onDelivery = await contract.getAssignedDelivery(account);
+        let deliveryId = await contract.getAssignedDelivery(account);
+        let onDelivery = await contract.activeDeliveries[deliveryId];
         setOnDelivery(onDelivery);
       }
     } catch (error) {
@@ -257,7 +258,7 @@ export default function Home() {
       <section className="">
         {user == "admin" &&
           <div className='p-5'>
-            <h1 className='text-lg font-bold uppercase'>{isFilled && "Food storage is now filled. Ready for delivery."}</h1>
+            <h1 className='text-lg font-bold uppercase'>{isFilled && <>Food storage is now filled. {onDelivery ? "and on delivery." : "and out for delivery."}</>}</h1>
             <div className='flex justify-between gap-2 mt-5'>
               <input
                 disabled={isFilled}
