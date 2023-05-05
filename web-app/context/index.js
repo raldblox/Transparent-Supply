@@ -179,7 +179,8 @@ export const ContextProvider = (props) => {
     setAdmin,
     driver,
     setDriver,
-    switchNetwork
+    switchNetwork,
+    connectWallet
   };
 
   return <Context.Provider value={value}>{props.children}</Context.Provider>;
