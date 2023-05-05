@@ -53,6 +53,7 @@ export default function Home() {
         } else {
           alert("Failed. Please try again.");
         }
+        readStatus();
       }
     } catch (error) {
       console.log("Error:", error);
@@ -102,6 +103,7 @@ export default function Home() {
         } else {
           alert("Failed. Please try again.");
         }
+        readStatus();
       }
     } catch (error) {
       console.log("Error:", error);
@@ -127,6 +129,7 @@ export default function Home() {
         } else {
           alert("Failed. Please try again.");
         }
+        readStatus();
       }
     } catch (error) {
       console.log("Error:", error);
