@@ -1,9 +1,8 @@
-
-import Login from '@/components/Login'
-import { Context } from '@/context';
+import Login from "@/components/Login";
+import { Context } from "@/context";
 import contractAbi from "/libraries/contractABI.json";
-import { ethers } from 'ethers';
-import { useContext, useEffect, useState } from 'react';
+import { ethers } from "ethers";
+import { useContext, useEffect, useState } from "react";
 
 const currentDeployment = "0xbbA72dc68B2B3Cc8fC643FD337BFb0DE5E484DB8";
 
@@ -27,12 +26,12 @@ export default function Home() {
   const [co2, setCo2] = useState("");
   const [onDelivery, setOnDelivery] = useState("");
 
-
-  const { user, contractAddress, setContractAddress, account, admin, driver } = useContext(Context);
+  const { user, contractAddress, setContractAddress, account, admin, driver } =
+    useContext(Context);
 
   const registerCrops = async () => {
     if (!contractAddress) {
-      alert("Insert Contract Address")
+      alert("Insert Contract Address");
       return;
     }
     try {
@@ -49,7 +48,7 @@ export default function Home() {
         const receipt = await tx.wait();
 
         if (receipt.status === 1) {
-          alert(`TX: https://mumbai.polygonscan.com.com/tx/` + tx.hash)
+          alert(`TX: https://mumbai.polygonscan.com.com/tx/` + tx.hash);
         } else {
           alert("Failed. Please try again.");
         }
@@ -78,10 +77,9 @@ export default function Home() {
         setFilled(fill);
         let deliveryId = await contract.getAssignedDelivery(account);
         console.log("deliveryId:", String(deliveryId));
-        let onDelivery = await contract.activeDeliveries[deliveryId];
+        let onDelivery = await contract.activeDeliveries(deliveryId);
         console.log("onDelivery?:", Boolean(onDelivery));
         setOnDelivery(Boolean(onDelivery));
-        console.log("onDelivery:", Boolean(onDelivery));
       }
     } catch (error) {
       console.log("Error:", error);
@@ -102,7 +100,7 @@ export default function Home() {
         let tx = await contract.registerDriver(driverAddr, driverName, true);
         const receipt = await tx.wait();
         if (receipt.status === 1) {
-          alert(`TX: https://mumbai.polygonscan.com.com/tx/` + tx.hash)
+          alert(`TX: https://mumbai.polygonscan.com.com/tx/` + tx.hash);
         } else {
           alert("Failed. Please try again.");
         }
@@ -125,10 +123,16 @@ export default function Home() {
           contractAbi,
           signer
         );
-        let tx = await contract.recordFoodStorageData(temp, humidity, ethylene, oxygen, co2);
+        let tx = await contract.recordFoodStorageData(
+          temp,
+          humidity,
+          ethylene,
+          oxygen,
+          co2
+        );
         const receipt = await tx.wait();
         if (receipt.status === 1) {
-          alert(`TX: https://mumbai.polygonscan.com.com/tx/` + tx.hash)
+          alert(`TX: https://mumbai.polygonscan.com.com/tx/` + tx.hash);
         } else {
           alert("Failed. Please try again.");
         }
@@ -154,7 +158,7 @@ export default function Home() {
         let tx = await contract.startLocationTracking(longitude1, latitude1);
         const receipt = await tx.wait();
         if (receipt.status === 1) {
-          alert(`TX: https://mumbai.polygonscan.com.com/tx/` + tx.hash)
+          alert(`TX: https://mumbai.polygonscan.com.com/tx/` + tx.hash);
         } else {
           alert("Failed. Please try again.");
         }
@@ -177,10 +181,14 @@ export default function Home() {
           contractAbi,
           signer
         );
-        let tx = await contract.endLocationTracking(longitude2, latitude2, distance);
+        let tx = await contract.endLocationTracking(
+          longitude2,
+          latitude2,
+          distance
+        );
         const receipt = await tx.wait();
         if (receipt.status === 1) {
-          alert(`TX: https://mumbai.polygonscan.com.com/tx/` + tx.hash)
+          alert(`TX: https://mumbai.polygonscan.com.com/tx/` + tx.hash);
         } else {
           alert("Failed. Please try again.");
         }
@@ -194,7 +202,7 @@ export default function Home() {
 
   const toggleLock = () => {
     if (!contractAddress) {
-      return
+      return;
     }
     if (lock) {
       setLock(false);
@@ -216,20 +224,20 @@ export default function Home() {
 
   useEffect(() => {
     readStatus();
-  }, [admin, contractAddress, user])
+  }, [admin, contractAddress, user]);
 
   return (
     <>
-      {admin &&
-        <section className='p-5'>
+      {admin && (
+        <section className="p-5">
           {user == "admin" && "Account is an authorized admin."}
           {user == "driver" && "Account is an authorized driver."}
           {user == "storage" && "Account is an authorized admin."}
         </section>
-      }
+      )}
       <section className="grid grid-cols-4">
         <div className="flex flex-col col-span-4 gap-5 m-5 lg:col-span-2">
-          <div className='flex gap-5 '>
+          <div className="flex gap-5 ">
             <input
               disabled={lock}
               type="text"
@@ -238,34 +246,44 @@ export default function Home() {
               value={contractAddress}
               onChange={(e) => setContractAddress(e.target.value)}
             />
-            <button onClick={toggleLock} >{lock ? "UNLOCK" : "LOCK"}</button>
+            <button onClick={toggleLock}>{lock ? "UNLOCK" : "LOCK"}</button>
           </div>
           <button onClick={set} className="full-button">
             Use Current Deployment
           </button>
-          {contractAddress && <a
-            target="_blank"
-            href={`https://mumbai.polygonscan.com/address/${contractAddress}`}
-            className="font-bold text-white underline uppercase hover:text-[blue]">
-            VIEW ON POLYGONSCAN
-          </a>}
+          {contractAddress && (
+            <a
+              target="_blank"
+              href={`https://mumbai.polygonscan.com/address/${contractAddress}`}
+              className="font-bold text-white underline uppercase hover:text-[blue]"
+            >
+              VIEW ON POLYGONSCAN
+            </a>
+          )}
         </div>
-        <div className='flex items-center justify-center col-span-4 gap-5 p-5 border-t lg:border-l lg:col-span-2'>
-          <div className='flex flex-col justify-center gap-5'>
-            <h2 className='text-center'>CONTROLLER</h2>
-            <div className='flex gap-5'>
+        <div className="flex items-center justify-center col-span-4 gap-5 p-5 border-t lg:border-l lg:col-span-2">
+          <div className="flex flex-col justify-center gap-5">
+            <h2 className="text-center">CONTROLLER</h2>
+            <div className="flex gap-5">
               <Login login="admin" />
               <Login login="driver" />
               <Login login="storage" />
             </div>
           </div>
         </div>
-      </section >
+      </section>
       <section className="">
-        {user == "admin" &&
-          <div className='p-5'>
-            <h1 className='text-lg font-bold uppercase'>{isFilled && <>Food storage is now filled {onDelivery ? "and on delivery." : "and out for delivery."}</>}</h1>
-            <div className='flex justify-between gap-2 mt-5'>
+        {user == "admin" && (
+          <div className="p-5">
+            <h1 className="text-lg font-bold uppercase">
+              {isFilled && (
+                <>
+                  Food storage is now filled{" "}
+                  {onDelivery ? "and on delivery." : "and out for delivery."}
+                </>
+              )}
+            </h1>
+            <div className="flex justify-between gap-2 mt-5">
               <input
                 disabled={isFilled}
                 value={crops}
@@ -273,11 +291,15 @@ export default function Home() {
                 placeholder="Insert Storage Content (e.g. Brocolli, Cauliflower, Beef)"
                 className="w-full px-3 py-2 font-semibold text-left border"
               />
-              <button className='btn' onClick={registerCrops} disabled={isFilled}>
+              <button
+                className="btn"
+                onClick={registerCrops}
+                disabled={isFilled}
+              >
                 Register
               </button>
             </div>
-            <div className='flex gap-2 mt-5'>
+            <div className="flex gap-2 mt-5">
               <input
                 disabled={!admin}
                 value={driverAddr}
@@ -292,64 +314,70 @@ export default function Home() {
                 placeholder="Driver's Name"
                 className="px-3 py-2 font-semibold text-left border"
               />
-              <button className='btn' onClick={registerDriver}>
+              <button className="btn" onClick={registerDriver}>
                 Register
               </button>
             </div>
-          </div>}
-        {user == "driver" &&
-          <div className='p-5 border'>
-            <h1 className='text-lg font-bold uppercase'>{forDelivery && "Food is now out for delivery."}</h1>
-            <div className='flex justify-between w-auto gap-2 mt-5 max-w-none'>
+          </div>
+        )}
+        {user == "driver" && (
+          <div className="p-5 border">
+            <h1 className="text-lg font-bold uppercase">
+              {forDelivery && "Food is now out for delivery."}
+            </h1>
+            <div className="flex justify-between w-auto gap-2 mt-5 max-w-none">
               <input
-                disabled={!driver || forDelivery}
+                disabled={!driver || forDelivery || onDelivery}
                 value={longitude1}
                 onChange={(e) => setLongitude1(e.target.value)}
                 placeholder="Longitude"
                 className="flex-grow w-full px-3 py-2 font-semibold text-left border"
               />
               <input
-                disabled={!driver || forDelivery}
+                disabled={!driver || forDelivery || onDelivery}
                 value={latitude1}
                 onChange={(e) => setLatitude1(e.target.value)}
                 placeholder="Latitude"
                 className="flex-grow w-full px-3 py-2 font-semibold text-left border"
               />
-              <button className='btn' onClick={startLocation}>
+              <button className="btn" onClick={startLocation}>
                 Start
               </button>
             </div>
-            <div className='flex gap-2 mt-5'>
+            <div className="flex gap-2 mt-5">
               <input
-                disabled={!driver || !isFilled || !onDelivery}
+                disabled={!onDelivery}
                 value={longitude2}
                 onChange={(e) => setLongitude2(e.target.value)}
                 placeholder="Longitude"
                 className="w-full px-3 py-2 font-semibold text-left border"
               />
               <input
-                disabled={!driver || !isFilled || !onDelivery}
+                disabled={!onDelivery}
                 value={latitude2}
                 onChange={(e) => setLatitude2(e.target.value)}
                 placeholder="Latitude"
                 className="w-full px-3 py-2 font-semibold text-left border"
               />
               <input
-                disabled={!driver || !isFilled || !onDelivery}
+                disabled={!onDelivery}
                 value={distance}
                 onChange={(e) => setDistance(e.target.value)}
                 placeholder="Distance Travelled"
                 className="w-full px-3 py-2 font-semibold text-left border"
               />
-              <button className='btn' onClick={endLocation}>
+              <button className="btn" onClick={endLocation}>
                 Finish
               </button>
             </div>
-          </div>}
-        {user == "storage" &&
-          <div className='p-5 border'>
-            <h1 className='text-lg font-bold uppercase'>{isFilled && "Food storage is now filled. Start tracking now."}</h1>
-            <div className='flex justify-between w-auto gap-2 mt-5 max-w-none'>
+          </div>
+        )}
+        {user == "storage" && (
+          <div className="p-5 border">
+            <h1 className="text-lg font-bold uppercase">
+              {isFilled && "Food storage is now filled. Start tracking now."}
+            </h1>
+            <div className="flex justify-between w-auto gap-2 mt-5 max-w-none">
               <input
                 disabled={!isFilled}
                 value={temp}
@@ -365,7 +393,7 @@ export default function Home() {
                 className="flex-grow w-full px-3 py-2 font-semibold text-left border"
               />
             </div>
-            <div className='flex gap-2 mt-5'>
+            <div className="flex gap-2 mt-5">
               <input
                 disabled={!isFilled}
                 value={ethylene}
@@ -387,12 +415,13 @@ export default function Home() {
                 placeholder="Carbon Dioxide"
                 className="w-full px-3 py-2 font-semibold text-left border"
               />
-              <button className='btn' onClick={recordCrops}>
+              <button className="btn" onClick={recordCrops}>
                 RECORD
               </button>
             </div>
-          </div>}
+          </div>
+        )}
       </section>
     </>
-  )
+  );
 }
