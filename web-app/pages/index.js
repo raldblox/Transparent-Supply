@@ -4,7 +4,7 @@ import contractAbi from "/libraries/contractABI.json";
 import { ethers } from "ethers";
 import { useContext, useEffect, useState } from "react";
 
-const currentDeployment = "0xbbA72dc68B2B3Cc8fC643FD337BFb0DE5E484DB8";
+const currentDeployment = "0xc48fdf73Aed5Fee03224B0456A6c8396b2d6F165";
 
 export default function Home() {
   const [lock, setLock] = useState(false);
@@ -72,14 +72,14 @@ export default function Home() {
           signer
         );
         let status = await contract.forDelivery();
-        setOutForDelivery(status);
-        let fill = await contract.isFilled();
-        setFilled(fill);
-        let deliveryId = await contract.getAssignedDelivery(account);
-        console.log("deliveryId:", String(deliveryId));
-        let onDelivery = await contract.activeDeliveries(deliveryId);
-        console.log("onDelivery?:", Boolean(onDelivery));
-        setOnDelivery(Boolean(onDelivery));
+        let status1 = await contract.onDelivery();
+        let status2 = await contract.isFilled();
+        setOnDelivery(Boolean(status1));
+        setOutForDelivery(Boolean(status));
+        setFilled(Boolean(status2));
+        console.log("isFilled?", Boolean(status2));
+        console.log("onDelivery?", Boolean(status1));
+        console.log("forDelivery?", Boolean(status));
       }
     } catch (error) {
       console.log("Error:", error);
@@ -327,14 +327,14 @@ export default function Home() {
             </h1>
             <div className="flex justify-between w-auto gap-2 mt-5 max-w-none">
               <input
-                disabled={!driver || forDelivery || onDelivery}
+                disabled={!driver || !forDelivery || !isFilled}
                 value={longitude1}
                 onChange={(e) => setLongitude1(e.target.value)}
                 placeholder="Longitude (start)"
                 className="flex-grow w-full px-3 py-2 font-semibold text-left border"
               />
               <input
-                disabled={!driver || forDelivery || onDelivery}
+                disabled={!driver || !forDelivery || !isFilled}
                 value={latitude1}
                 onChange={(e) => setLatitude1(e.target.value)}
                 placeholder="Latitude (start)"
@@ -346,21 +346,21 @@ export default function Home() {
             </div>
             <div className="flex gap-2 mt-5">
               <input
-                disabled={!onDelivery || !forDelivery}
+                disabled={!onDelivery || !isFilled}
                 value={longitude2}
                 onChange={(e) => setLongitude2(e.target.value)}
                 placeholder="Longitude (end)"
                 className="w-full px-3 py-2 font-semibold text-left border"
               />
               <input
-                disabled={!onDelivery || !forDelivery}
+                disabled={!onDelivery || !isFilled}
                 value={latitude2}
                 onChange={(e) => setLatitude2(e.target.value)}
                 placeholder="Latitude (end)"
                 className="w-full px-3 py-2 font-semibold text-left border"
               />
               <input
-                disabled={!onDelivery || !forDelivery}
+                disabled={!onDelivery || !isFilled}
                 value={distance}
                 onChange={(e) => setDistance(e.target.value)}
                 placeholder="Distance Travelled"
