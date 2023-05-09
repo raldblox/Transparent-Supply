@@ -23,63 +23,60 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
  */
 contract FoodStorage {
     using Strings for uint256;
+    uint256 public foodID;
     address public masterAdmin;
-    mapping(address => bool) public isAdmins;
 
-    struct foodstorage {
-        uint256 txBlock;
-        uint256 timestamp;
-        uint256 cropID;
-        string temperature;
-        string humidity;
-        string ethylene;
-        string oxygen;
-        string carbondioxide;
+    struct Storage {
+        uint256[] foodId;
+        mapping(uint256 => string) foodcrops;
+        mapping(uint256 => address) driver;
+        mapping(uint256 => uint256[]) txBlock;
+        mapping(uint256 => uint256[]) timestamp;
+        mapping(uint256 => string[]) temperature;
+        mapping(uint256 => string[]) humidity;
+        mapping(uint256 => string[]) ethylene;
+        mapping(uint256 => string[]) oxygen;
+        mapping(uint256 => string[]) carbondioxide;
     }
 
-    struct locationdata {
-        string crops;
-        uint256 deliveryID;
-        address driverID;
-        string longitude1;
-        string latitude1;
-        string longitude2;
-        string latitude2;
-        uint256 departureTxBlock;
-        uint256 departureTime;
-        uint256 arrivalTxBlock;
-        uint256 arrivalTime;
-        string distanceTravelled;
+    struct Delivery {
+        uint256[] deliveryId;
+        mapping(uint256 => bool) isFilled;
+        mapping(uint256 => bool) delivered;
+        mapping(uint256 => bool) onDelivery;
+        mapping(uint256 => address) driverWallet;
+        mapping(uint256 => string) driverName;
+        mapping(uint256 => string) startlocation;
+        mapping(uint256 => string) endlocation;
+        mapping(uint256 => uint256) starttime;
+        mapping(uint256 => uint256) endtime;
+        mapping(uint256 => uint256) startBlock;
+        mapping(uint256 => uint256) endBlock;
+        mapping(uint256 => string) distanceTravelled;
     }
 
-    uint256 public deliveryIDs;
-    uint256 public driverCount;
+    struct Driver {
+        address[] driverAddress;
+        mapping(address => bool) status;
+        mapping(address => string) names;
+        mapping(address => uint256[]) deliveredCrops; // map address to array of deliveryIds
+    }
 
-    foodstorage[] public foodstorages;
-    locationdata[] public locationdatas;
-
-    // Map deliveryID to Crops
-    mapping(uint256 => string) public crops;
+    Delivery private deliveries;
+    Storage private storages;
+    Driver private drivers;
 
     bool public isFilled;
     bool public forDelivery;
+    bool public onDelivery;
 
-    // Map Food Storage IDs to Storage Names
-    mapping(uint256 => string) public foodStorageNames;
-
-    // Map driver IDs to storage IDs
-    mapping(address => uint256) public assignedDeliveries;
-
-    // Map delivery status of delivery IDs
-    mapping(uint256 => bool) public activeDeliveries;
-
-    // Map addresses to drivers names
-    mapping(address => string) public driverNames;
     mapping(address => bool) public isDrivers;
+    mapping(address => bool) public isAdmins;
 
     constructor() {
         masterAdmin = msg.sender;
         isAdmins[msg.sender] = true;
+        isDrivers[msg.sender] = true;
     }
 
     modifier isAdmin() {
@@ -91,26 +88,22 @@ contract FoodStorage {
     function registerCrop(string memory _crops) public isAdmin {
         require(!isFilled, "With crops already.");
         require(!forDelivery, "With crops already.");
-        crops[deliveryIDs] = _crops;
+        storages.foodId.push(foodID);
+        storages.foodcrops[foodID] = _crops;
+        deliveries.isFilled[foodID] = true;
         isFilled = true;
-        deliveryIDs++;
+        forDelivery = true;
+        foodID++;
     }
 
-    function getCrop(
-        uint256 _deliveryID
-    ) external view returns (string memory) {
-        return crops[_deliveryID];
+    function getCrop(uint256 _foodID) external view returns (string memory) {
+        return storages.foodcrops[_foodID];
     }
 
     // Register admins
-    function registerAdmin(
-        address _walletAddress,
-        string memory _name,
-        bool _isDriver
-    ) public {
+    function registerAdmin(address _walletAddress, bool _isAdmin) public {
         require(masterAdmin == msg.sender, "Not the master admin.");
-        driverNames[_walletAddress] = _name;
-        isDrivers[_walletAddress] = _isDriver;
+        isAdmins[_walletAddress] = _isAdmin;
     }
 
     // Register drivers
@@ -119,19 +112,19 @@ contract FoodStorage {
         string memory _driverName,
         bool _isDriver
     ) public isAdmin {
-        driverNames[_walletAddress] = _driverName;
-        isDrivers[_walletAddress] = _isDriver;
-        driverCount++;
+        drivers.driverAddress.push(_walletAddress);
+        drivers.names[_walletAddress] = _driverName;
+        drivers.status[_walletAddress] = _isDriver;
     }
 
     function getDriver(
         address _walletAddress
     ) public view returns (string memory) {
-        return driverNames[_walletAddress];
+        return drivers.names[_walletAddress];
     }
 
     function isDriver(address _walletAddress) external view returns (bool) {
-        return isDrivers[_walletAddress];
+        return drivers.status[_walletAddress];
     }
 
     function isAuthorized(address _walletAddress) external view returns (bool) {
@@ -147,45 +140,49 @@ contract FoodStorage {
         string memory _carbondioxide
     ) public {
         require(isFilled, "Food storage is empty");
-        foodstorage storage data = foodstorages.push();
-        data.txBlock = block.number;
-        data.timestamp = block.timestamp;
-        data.cropID = deliveryIDs - 1;
-        data.temperature = _temperature;
-        data.humidity = _humidity;
-        data.ethylene = _ethylene;
-        data.oxygen = _oxygen;
-        data.carbondioxide = _carbondioxide;
+        storages.foodId.push(foodID - 1);
+        storages.txBlock[foodID - 1].push(block.number);
+        storages.timestamp[foodID - 1].push(block.timestamp);
+        storages.temperature[foodID - 1].push(_temperature);
+        storages.humidity[foodID - 1].push(_humidity);
+        storages.ethylene[foodID - 1].push(_ethylene);
+        storages.oxygen[foodID - 1].push(_oxygen);
+        storages.carbondioxide[foodID - 1].push(_carbondioxide);
     }
 
-    function getFoodStorageDataByIndex(
-        uint256 index
+    function getFoodDataByIndex(
+        uint256 foodId
     )
         public
         view
         returns (
-            uint256 txBlock,
-            uint256 timestamp,
-            string memory temperature,
-            string memory humidity,
-            string memory ethylene,
-            string memory oxygen,
-            string memory carbondioxide
+            string[] memory,
+            string[] memory,
+            string[] memory,
+            string[] memory,
+            string[] memory
         )
     {
-        return (
-            foodstorages[index].txBlock,
-            foodstorages[index].timestamp,
-            foodstorages[index].temperature,
-            foodstorages[index].humidity,
-            foodstorages[index].ethylene,
-            foodstorages[index].oxygen,
-            foodstorages[index].carbondioxide
-        );
+        string[] memory temp = storages.temperature[foodId];
+        string[] memory humid = storages.humidity[foodId];
+        string[] memory ethyl = storages.ethylene[foodId];
+        string[] memory oxy = storages.oxygen[foodId];
+        string[] memory co2 = storages.carbondioxide[foodId];
+        return (temp, humid, ethyl, oxy, co2);
+    }
+
+    function getFoodStorageDataByIndex(
+        uint256 foodId
+    ) public view returns (string memory, uint256[] memory, uint256[] memory) {
+        string memory food = storages.foodcrops[foodId];
+        uint256[] memory txblock = storages.txBlock[foodId];
+        uint256[] memory time = storages.timestamp[foodId];
+
+        return (food, txblock, time);
     }
 
     function getStorageLength() public view returns (uint256) {
-        return foodstorages.length;
+        return (storages.foodId).length;
     }
 
     // Start Delivery
@@ -194,19 +191,18 @@ contract FoodStorage {
         string memory _latitude1
     ) public {
         require(isDrivers[msg.sender], "Not a driver");
-        uint256 deliveryId = deliveryIDs - 1;
-        assignedDeliveries[msg.sender] = deliveryId;
-        if (!activeDeliveries[deliveryId]) {
-            locationdata storage data = locationdatas.push();
-            data.crops = crops[deliveryId];
-            data.deliveryID = deliveryId;
-            data.driverID = msg.sender;
-            data.departureTxBlock = block.number;
-            data.longitude1 = _longitude1;
-            data.latitude1 = _latitude1;
-            data.departureTime = block.timestamp;
-            activeDeliveries[deliveryId] = true;
-        }
+        require(isFilled, "Fill in storage first");
+        deliveries.driverWallet[foodID - 1] = msg.sender;
+        deliveries.driverName[foodID - 1] = drivers.names[msg.sender];
+        deliveries.deliveryId.push(foodID - 1);
+        deliveries.startlocation[foodID - 1] = string(
+            abi.encodePacked("(", _longitude1, ",", _latitude1, ")")
+        );
+        deliveries.starttime[foodID - 1] = block.timestamp;
+        deliveries.startBlock[foodID - 1] = block.number;
+        deliveries.onDelivery[foodID - 1] = true;
+        onDelivery = true;
+        forDelivery = false;
     }
 
     // Finish Delivery
@@ -215,24 +211,26 @@ contract FoodStorage {
         string memory _latitude2,
         string memory _distanceTravelled
     ) public {
-        uint256 deliveryID = getAssignedDelivery(msg.sender);
-        require(activeDeliveries[deliveryID], "Inactive Delivery");
-        locationdata storage data = locationdatas[deliveryID]; // get the latest starting location data
-        data.arrivalTxBlock = block.number;
-        data.longitude2 = _longitude2;
-        data.latitude2 = _latitude2;
-        data.arrivalTime = block.timestamp;
-        data.distanceTravelled = _distanceTravelled;
+        require(onDelivery, "Start location tracking first");
+        deliveries.endlocation[foodID - 1] = string(
+            abi.encodePacked(_longitude2, _latitude2)
+        );
+        deliveries.distanceTravelled[foodID - 1] = _distanceTravelled;
+        deliveries.endtime[foodID - 1] = block.timestamp;
+        deliveries.endBlock[foodID - 1] = block.number;
+        deliveries.isFilled[foodID - 1] = false;
+        deliveries.onDelivery[foodID - 1] = false;
+        deliveries.delivered[foodID - 1] = true;
+        onDelivery = false;
         isFilled = false;
     }
 
     function getDeliveryDataByIndex(
-        uint256 index
+        uint256 deliveryId
     )
         public
         view
         returns (
-            string memory cropInfo,
             string memory driverName,
             string memory location1,
             string memory location2,
@@ -241,57 +239,33 @@ contract FoodStorage {
             string memory distanceTravelled
         )
     {
-        string memory drivername = getDriver(
-            address(locationdatas[index].driverID)
-        );
-        string memory location1_ = string(
-            abi.encodePacked(
-                "(",
-                locationdatas[index].longitude1,
-                ",",
-                locationdatas[index].latitude1,
-                ")"
-            )
-        );
-        string memory location2_ = string(
-            abi.encodePacked(
-                "(",
-                locationdatas[index].longitude2,
-                ",",
-                locationdatas[index].latitude2,
-                ")"
-            )
-        );
+        string memory drivername = deliveries.driverName[deliveryId];
+        string memory startLocation = deliveries.startlocation[deliveryId];
+        string memory endLocation = deliveries.endlocation[deliveryId];
         string memory departure_ = string(
             abi.encodePacked(
-                Strings.toString(locationdatas[index].departureTime),
+                Strings.toString(deliveries.starttime[deliveryId]),
                 " - BLOCK:",
-                Strings.toString(uint256(locationdatas[index].departureTxBlock))
+                Strings.toString(uint256(deliveries.startBlock[deliveryId]))
             )
         );
         string memory arrival_ = string(
             abi.encodePacked(
-                Strings.toString(locationdatas[index].arrivalTime),
+                Strings.toString(deliveries.endtime[deliveryId]),
                 " - BLOCK:",
-                Strings.toString(uint256(locationdatas[index].arrivalTxBlock))
+                Strings.toString(uint256(deliveries.endBlock[deliveryId]))
             )
         );
-        string memory distanceTravelled_ = locationdatas[index]
-            .distanceTravelled;
+        string memory distanceTravelled_ = deliveries.distanceTravelled[
+            deliveryId
+        ];
         return (
-            locationdatas[index].crops,
             drivername,
-            location1_,
-            location2_,
+            startLocation,
+            endLocation,
             departure_,
             arrival_,
             distanceTravelled_
         );
-    }
-
-    function getAssignedDelivery(
-        address _driver
-    ) public view returns (uint256) {
-        return assignedDeliveries[_driver];
     }
 }

@@ -330,14 +330,14 @@ export default function Home() {
                 disabled={!driver || forDelivery || onDelivery}
                 value={longitude1}
                 onChange={(e) => setLongitude1(e.target.value)}
-                placeholder="Longitude"
+                placeholder="Longitude (start)"
                 className="flex-grow w-full px-3 py-2 font-semibold text-left border"
               />
               <input
                 disabled={!driver || forDelivery || onDelivery}
                 value={latitude1}
                 onChange={(e) => setLatitude1(e.target.value)}
-                placeholder="Latitude"
+                placeholder="Latitude (start)"
                 className="flex-grow w-full px-3 py-2 font-semibold text-left border"
               />
               <button className="btn" onClick={startLocation}>
@@ -346,21 +346,21 @@ export default function Home() {
             </div>
             <div className="flex gap-2 mt-5">
               <input
-                disabled={!onDelivery}
+                disabled={!onDelivery || !forDelivery}
                 value={longitude2}
                 onChange={(e) => setLongitude2(e.target.value)}
-                placeholder="Longitude"
+                placeholder="Longitude (end)"
                 className="w-full px-3 py-2 font-semibold text-left border"
               />
               <input
-                disabled={!onDelivery}
+                disabled={!onDelivery || !forDelivery}
                 value={latitude2}
                 onChange={(e) => setLatitude2(e.target.value)}
-                placeholder="Latitude"
+                placeholder="Latitude (end)"
                 className="w-full px-3 py-2 font-semibold text-left border"
               />
               <input
-                disabled={!onDelivery}
+                disabled={!onDelivery || !forDelivery}
                 value={distance}
                 onChange={(e) => setDistance(e.target.value)}
                 placeholder="Distance Travelled"
